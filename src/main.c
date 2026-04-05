@@ -38,7 +38,10 @@ int speed = 2;
 void Update(){
     DrawObjects();
     player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
-    npc_inst->velocity.x = Lerp(npc_inst->velocity.x, -(IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
+    player_inst->velocity.y = Lerp(player_inst->velocity.y, -(IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN)) * speed, 0.075f);
+
+    npc_inst->velocity.x = Lerp(npc_inst->velocity.x, (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * speed, 0.075f);
+    npc_inst->velocity.y = Lerp(npc_inst->velocity.y, -(IsKeyDown(KEY_W) - IsKeyDown(KEY_S)) * speed, 0.075f);
 }
 
 int main(){
@@ -63,9 +66,9 @@ int main(){
 
     bgi = LoadTexture("assets/sprites/bg.png");
 
-    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, true };
-    npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, true };
-    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, true };
+    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, 0 };
+    npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, 0 };
+    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, 0 };
 
     bg_inst = spawnObject(0, 0, bg);
     player_inst = spawnObject(0, 0, playerobj);
