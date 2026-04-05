@@ -1,12 +1,14 @@
 #include "objects.h"
+#include <stdio.h>
 
 obj loadedObjects[MAX_OBJECTS];
 int ObjectCount = 0;
 
-void spawnObject(int x, int y, obj object){
-    if(ObjectCount >= MAX_OBJECTS) return;
+obj* spawnObject(int x, int y, obj object){
+    if(ObjectCount >= MAX_OBJECTS) return NULL;
     object.position = (Vector2){ x, y };
-    loadedObjects[ObjectCount++] = object;
+    loadedObjects[ObjectCount] = object;
+    return &loadedObjects[ObjectCount++];
 }
 
 void deleteObject(int index){
