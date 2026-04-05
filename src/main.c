@@ -19,16 +19,14 @@ Texture2D player;
 
 Texture2D bgi;
 
+// objects
 obj playerobj;
-
 obj npc;
-
 obj bg;
 
+// object instances
 obj* bg_inst;
-
 obj* player_inst;
-
 obj* npc_inst;
 
 int direction;
@@ -36,12 +34,13 @@ int direction;
 int speed = 2;
 
 void Update(){
-    DrawObjects();
     player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
     player_inst->velocity.y = Lerp(player_inst->velocity.y, -(IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN)) * speed, 0.075f);
 
     npc_inst->velocity.x = Lerp(npc_inst->velocity.x, (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * speed, 0.075f);
     npc_inst->velocity.y = Lerp(npc_inst->velocity.y, -(IsKeyDown(KEY_W) - IsKeyDown(KEY_S)) * speed, 0.075f);
+    DrawObjects();
+    DrawText("X-SPLICE MK II ENGINE -- V A0.1 BUILD\nNOT FOR PUBLIC REPRODUCTION", 0, 0, 8, ColorFromHSV(0, 0, 1));
 }
 
 int main(){
