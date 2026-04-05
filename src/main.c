@@ -17,9 +17,15 @@ RenderTexture2D rendertex;
 
 Texture2D player;
 
+Texture2D bgi;
+
 obj playerobj;
 
 obj npc;
+
+obj bg;
+
+obj* bg_inst;
 
 obj* player_inst;
 
@@ -55,17 +61,22 @@ int main(){
 
     player = LoadTexture("assets/sprites/player.png");
 
+    bgi = LoadTexture("assets/sprites/bg.png");
+
     playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, true };
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, true };
+    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, true };
 
+    bg_inst = spawnObject(0, 0, bg);
     player_inst = spawnObject(0, 0, playerobj);
     npc_inst = spawnObject(298, 120, npc);
 
     // game loop
     while(!WindowShouldClose()){
 
+        // draw the game at true resolution
         BeginTextureMode(rendertex);
-            ClearBackground(ColorFromHSV(216, 1, 0.25f));
+            ClearBackground(ColorFromHSV(216, 1, 0.25f)); //placeholder
             Update();
         EndTextureMode();
 
@@ -75,7 +86,7 @@ int main(){
             DrawTexturePro(
                 rendertex.texture,
                 (Rectangle){ 0, 0, 320, -240 },
-                (Rectangle){ offsetX, 0, dstW, dstH },
+                (Rectangle){ offsetX, 0, dstW, dstH }, // draws it at full screen resolution
                 (Vector2){ 0, 0 },
                 0.0f,
                 WHITE
