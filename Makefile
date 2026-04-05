@@ -1,38 +1,44 @@
 # XSPLICE ENGINE MARK II
 # Builds all .c files in src/ — headers discovered automatically
 
-CC      = gcc
+CC      = clang
 TARGET  = XSPLICE
 SRCDIR  = src
-OBJDIR  = obj
+OBJDIR  = bin/obj
+BINDIR  = bin
 
 SRCS    = $(wildcard $(SRCDIR)/*.c)
 OBJS    = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS))
 
 CFLAGS  = -Wall -Wextra -I$(SRCDIR) -O2
-LDFLAGS = -lraylib -lm -ldl -lpthread -lX11
+LDFLAGS = -lraylib -lm -lpthread
 
-# ── platform-specific ──────────────────────────────────────────
-UNAME := $(shell uname -s)
-ifeq ($(UNAME), Linux)
-    LDFLAGS += -lGL
-endif
-ifeq ($(UNAME), Darwin)
-    LDFLAGS += -framework OpenGL -framework Cocoa -framework IOKit
-endif
-# MinGW / Windows
-ifneq (,$(findstring MINGW,$(UNAME)))
+# --- platform-specific ---
+ifeq ($(OS), Windows_NT)
     LDFLAGS += -lopengl32 -lgdi32 -lwinmm
-    TARGET  := $(TARGET).exe
+    TARGET  := $(BINDIR)/$(TARGET).exe
+else
+    UNAME := $(shell uname -s)
+    ifeq ($(UNAME), Linux)
+        LDFLAGS += -lGL -lX11 -ldl
+    endif
+    ifeq ($(UNAME), Darwin)
+        LDFLAGS += -framework OpenGL -framework Cocoa -framework IOKit
+    endif
+    TARGET := $(BINDIR)/$(TARGET)
 endif
 
-# ── rules ──────────────────────────────────────────────────────
+# --- rules ---
 .PHONY: all clean run
 
 all: $(OBJDIR) $(TARGET)
 
 $(OBJDIR):
+ifeq ($(OS), Windows_NT)
+	if not exist bin\obj mkdir bin\obj
+else
 	mkdir -p $(OBJDIR)
+endif
 
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
@@ -42,7 +48,12 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
+ifeq ($(OS), Windows_NT)
+	if exist $(OBJDIR) rmdir /s /q $(OBJDIR)
+	if exist $(TARGET) del /q $(TARGET)
+else
 	rm -rf $(OBJDIR) $(TARGET)
+endif
 
 run: all
 	./$(TARGET)
