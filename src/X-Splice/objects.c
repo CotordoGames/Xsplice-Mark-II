@@ -76,9 +76,13 @@ void DrawObjects(){
 
         if(!BlockedX){
             loadedObjects[i].position.x += loadedObjects[i].velocity.x;
+        } else {
+            loadedObjects[i].velocity.x = 0;
         }
         if(!BlockedY){
             loadedObjects[i].position.y += loadedObjects[i].velocity.y;
+        } else {
+            loadedObjects[i].velocity.y = 0;
         }
 
         if(loadedObjects[i].flags & X_VISIBLE){

@@ -38,9 +38,9 @@ void start(){
 
     bgi = LoadTexture("assets/sprites/bg.png");
 
-    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
+    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID | X_GRAVITY };
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
-    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, (Vector2){ 0, 0 }, X_VISIBLE };
+    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, (Vector2){ 0, 0 }, X_VISIBLE};
 
     bg_inst = spawnObject(0, 0, bg);
     player_inst = spawnObject(0, 0, playerobj);
@@ -49,12 +49,16 @@ void start(){
 
 void Update(){
     player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
-    player_inst->velocity.y = Lerp(player_inst->velocity.y, -(IsKeyDown(KEY_UP) - IsKeyDown(KEY_DOWN)) * speed, 0.075f);
+
+    if(player_inst->velocity.y == 0 && IsKeyPressed(KEY_Z)){
+        player_inst-> velocity.y = -4;
+    }
 
     npc_inst->velocity.x = Lerp(npc_inst->velocity.x, (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * speed, 0.075f);
     npc_inst->velocity.y = Lerp(npc_inst->velocity.y, -(IsKeyDown(KEY_W) - IsKeyDown(KEY_S)) * speed, 0.075f);
     DrawObjects();
-    DrawText("X-SPLICE MK II ENGINE -- V A0.1 BUILD\nNOT FOR PUBLIC REPRODUCTION", 0, 0, 8, ColorFromHSV(0, 0, 1));
+    Color translucent = { 255, 255, 255, 128};
+    DrawText("X-SPLICE MK II ENGINE -- V A0.1 BUILD\nNOT FOR PUBLIC REPRODUCTION", 0, 0, 8, translucent);
 }
 
 int main(){
