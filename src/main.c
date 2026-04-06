@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <raylib.h>
 #include <raymath.h>
-#include "objects.h"
+#include "X-Splice/objects.h"
 
 RenderTexture2D rendertex;
 
@@ -32,6 +32,20 @@ obj* npc_inst;
 int direction;
 
 int speed = 2;
+
+void start(){
+    player = LoadTexture("assets/sprites/player.png");
+
+    bgi = LoadTexture("assets/sprites/bg.png");
+
+    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
+    npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
+    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, (Vector2){ 0, 0 }, X_VISIBLE };
+
+    bg_inst = spawnObject(0, 0, bg);
+    player_inst = spawnObject(0, 0, playerobj);
+    npc_inst = spawnObject(298, 120, npc);
+}
 
 void Update(){
     player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
@@ -61,17 +75,7 @@ int main(){
     // initialize the render texture to be 240p
     rendertex = LoadRenderTexture(320, 240);
 
-    player = LoadTexture("assets/sprites/player.png");
-
-    bgi = LoadTexture("assets/sprites/bg.png");
-
-    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, 0 };
-    npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 16, 16 }, 0 };
-    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, 0 };
-
-    bg_inst = spawnObject(0, 0, bg);
-    player_inst = spawnObject(0, 0, playerobj);
-    npc_inst = spawnObject(298, 120, npc);
+    start();
 
     // game loop
     while(!WindowShouldClose()){
