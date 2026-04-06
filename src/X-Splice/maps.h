@@ -3,11 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <raylib.h>
+
 
 typedef struct{
     uint8_t tile;
     uint8_t coll;
     uint8_t bright;
+    uint8_t pad;
 } map_tile;
 
 typedef struct{
@@ -20,6 +23,15 @@ typedef struct{
     uint8_t backMusic;
     uint8_t objCount;
     map_tile *tileData;
+    Texture2D tileSet;
 } map;
+
+map* readMap(char *path);
+
+void setMap(map *m);
+
+void freeMap(map *map);
+
+void drawMap();
 
 #endif //MAPS_H_

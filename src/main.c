@@ -12,46 +12,62 @@
 #include <raylib.h>
 #include <raymath.h>
 #include "X-Splice/objects.h"
+#include "X-Splice/maps.h"
 
 RenderTexture2D rendertex;
 
 Texture2D player;
-
 Texture2D bgi;
+Texture2D ground;
 
 // objects
 obj playerobj;
 obj npc;
 obj bg;
+obj groundobj;
 
 // object instances
 obj* bg_inst;
 obj* player_inst;
 obj* npc_inst;
+obj* ground_inst;
 
 int direction;
 
 int speed = 2;
 
 void start(){
+    map *m = readMap("assets/maps/map01.xsm");
+    if(!m) puts("map failed to load!");
+    else printf("map: %dx%d tilemap:%d\n", m->width, m->height, m->tileMap);
+    setMap(m);
+
     player = LoadTexture("assets/sprites/player.png");
 
     bgi = LoadTexture("assets/sprites/bg.png");
+    ground = LoadTexture("assets/sprites/ground.png");
 
     playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID | X_GRAVITY };
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
-    bg = (obj){ bgi, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 320, 240 }, (Vector2){ 0, 0 }, X_VISIBLE};
+    groundobj = (obj){ ground, (Vector2){ 0, 192 }, (Vector2){ 0, 0 }, (Vector2){ 320, 48 }, (Vector2){ 0, 0 }, X_SOLID};
 
-    bg_inst = spawnObject(0, 0, bg);
+
     player_inst = spawnObject(0, 0, playerobj);
     npc_inst = spawnObject(298, 120, npc);
+    ground_inst = spawnObject(0, 192, groundobj);
 }
 
 void Update(){
+    // draw current map
+    drawMap();
+
     player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
 
     if(player_inst->velocity.y == 0 && IsKeyPressed(KEY_Z)){
-        player_inst-> velocity.y = -4;
+        player_inst-> velocity.y = -6;
+    }
+    if(player_inst->velocity.y < -0.1f && IsKeyUp(KEY_Z)){
+        player_inst->velocity.y /= 1.25;
     }
 
     npc_inst->velocity.x = Lerp(npc_inst->velocity.x, (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * speed, 0.075f);

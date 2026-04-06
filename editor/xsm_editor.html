@@ -782,7 +782,7 @@ function saveMap(){
   state.width=parseInt(document.getElementById('h-width').value)||16;
   state.height=parseInt(document.getElementById('h-height').value)||12;
   const w=state.width,h=state.height,objCount=Math.min(state.objs.length,255);
-  const buf=new ArrayBuffer(44+(w*h*2)+(objCount*10));
+  const buf=new ArrayBuffer(44+(w*h*4)+(objCount*10));
   const dv=new DataView(buf),u8=new Uint8Array(buf);let off=0;
   // XSM1 magic
   u8[off++]=0x58;u8[off++]=0x53;u8[off++]=0x4D;u8[off++]=0x31;
@@ -790,7 +790,7 @@ function saveMap(){
   for(let i=0;i<16;i++)u8[off++]=(state.author.charCodeAt(i)||0)&0xFF;
   dv.setUint16(off,w,true);off+=2;dv.setUint16(off,h,true);off+=2;
   u8[off++]=state.tilemapIdx;u8[off++]=state.bgIdx;u8[off++]=state.bgmIdx;u8[off++]=objCount;
-  for(let i=0;i<w*h;i++){const t=state.tiles[i]||{tile:0,coll:0,bright:0};u8[off++]=t.tile&0xFF;u8[off++]=((t.coll&0xF)<<4)|(t.bright&0xF);}
+  for(let i=0;i<w*h;i++){const t=state.tiles[i]||{tile:0,coll:0,bright:0};u8[off++]=t.tile&0xFF;u8[off++]=t.coll&0xFF;u8[off++]=t.bright&0xFF;u8[off++]=0;}
   for(let i=0;i<objCount;i++){const o=state.objs[i];dv.setUint16(off,o.x,true);off+=2;dv.setUint16(off,o.y,true);off+=2;dv.setUint16(off,o.w,true);off+=2;dv.setUint16(off,o.h,true);off+=2;u8[off++]=o.objIdx&0xFF;u8[off++]=o.enabled?1:0;}
   const blob=new Blob([buf],{type:'application/octet-stream'});
   const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=(state.name.trim()||'map')+'.xsm';a.click();URL.revokeObjectURL(url);
@@ -811,7 +811,7 @@ function loadMap(ev){
     for(let i=0;i<16;i++){const c=u8[off+i];if(c)author+=String.fromCharCode(c);}off+=16;
     const w=dv.getUint16(off,true);off+=2;const h=dv.getUint16(off,true);off+=2;
     const tilemapIdx=u8[off++],bgIdx=u8[off++],bgmIdx=u8[off++],objCount=u8[off++];
-    const tiles=[];for(let i=0;i<w*h;i++){const tile=u8[off++],cb=u8[off++];tiles.push({tile,coll:(cb>>4)&0xF,bright:cb&0xF});}
+    const tiles=[];for(let i=0;i<w*h;i++){const tile=u8[off++],coll=u8[off++],bright=u8[off++];off++;tiles.push({tile,coll,bright});}
     const objs=[];for(let i=0;i<objCount;i++){const x=dv.getUint16(off,true);off+=2;const y=dv.getUint16(off,true);off+=2;const ww=dv.getUint16(off,true);off+=2;const hh=dv.getUint16(off,true);off+=2;objs.push({x,y,w:ww,h:hh,objIdx:u8[off++],enabled:u8[off++],visible:true});}
     state={name,author,width:w,height:h,tilemapIdx,bgIdx,bgmIdx,tiles,objs};
     document.getElementById('h-name').value=name;document.getElementById('h-author').value=author;document.getElementById('h-width').value=w;document.getElementById('h-height').value=h;

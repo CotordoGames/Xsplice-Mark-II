@@ -36,7 +36,7 @@ void DrawObjects(){
             }
         }
 
-        if(loadedObjects[i].flags & X_SOLID){
+        if(loadedObjects[i].flags & X_SOLID){ // && loadedObjects[i].velocity.x != 0 && loadedObjects[i].velocity.y != 0
             for(int x = 0; x < ObjectCount; x++){
                 if(loadedObjects[x].flags & X_SOLID){
 
