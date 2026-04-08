@@ -9,8 +9,6 @@
 typedef struct{
     uint8_t tile;
     uint8_t coll;
-    uint8_t bright;
-    uint8_t pad;
 } map_tile;
 
 typedef struct{

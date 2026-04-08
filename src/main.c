@@ -13,6 +13,7 @@
 #include <raymath.h>
 #include "X-Splice/objects.h"
 #include "X-Splice/maps.h"
+#include "X-Splice/camera.h"
 
 RenderTexture2D rendertex;
 
@@ -37,6 +38,7 @@ int direction;
 int speed = 2;
 
 void start(){
+    initCamera(0, 0);
     map *m = readMap("assets/maps/map01.xsm");
     if(!m) puts("map failed to load!");
     else printf("map: %dx%d tilemap:%d\n", m->width, m->height, m->tileMap);
@@ -47,7 +49,7 @@ void start(){
     bgi = LoadTexture("assets/sprites/bg.png");
     ground = LoadTexture("assets/sprites/ground.png");
 
-    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID | X_GRAVITY };
+    playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 7 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID | X_GRAVITY };
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
     groundobj = (obj){ ground, (Vector2){ 0, 192 }, (Vector2){ 0, 0 }, (Vector2){ 320, 48 }, (Vector2){ 0, 0 }, X_SOLID};
 
@@ -59,12 +61,15 @@ void start(){
 
 void Update(){
     // draw current map
-    drawMap();
 
-    player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.075f);
-
-    if(player_inst->velocity.y == 0 && IsKeyPressed(KEY_Z)){
-        player_inst-> velocity.y = -6;
+    if(player_inst->velocity.y == 0){
+        player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed, 0.085f);
+        if(IsKeyPressed(KEY_Z)){
+            player_inst-> velocity.y = -6;
+        }
+    }
+    else{
+        player_inst->velocity.x = Lerp(player_inst->velocity.x, (IsKeyDown(KEY_RIGHT) - IsKeyDown(KEY_LEFT)) * speed * 1.25, 0.04f);
     }
     if(player_inst->velocity.y < -0.1f && IsKeyUp(KEY_Z)){
         player_inst->velocity.y /= 1.25;
@@ -72,7 +77,15 @@ void Update(){
 
     npc_inst->velocity.x = Lerp(npc_inst->velocity.x, (IsKeyDown(KEY_D) - IsKeyDown(KEY_A)) * speed, 0.075f);
     npc_inst->velocity.y = Lerp(npc_inst->velocity.y, -(IsKeyDown(KEY_W) - IsKeyDown(KEY_S)) * speed, 0.075f);
+    Vector2 CamFollow = {
+        player_inst->position.x + (player_inst->size.x / 2),
+        player_inst->position.y + (player_inst->size.y / 2)
+    };
+    updateCamera(CamFollow);
+    beginCameraDraw();
+    drawMap();
     DrawObjects();
+    endCameraDraw();
     Color translucent = { 255, 255, 255, 128};
     DrawText("X-SPLICE MK II ENGINE -- V A0.1 BUILD\nNOT FOR PUBLIC REPRODUCTION", 0, 0, 8, translucent);
 }
