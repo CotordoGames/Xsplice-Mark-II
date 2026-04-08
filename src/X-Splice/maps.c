@@ -1,4 +1,5 @@
 #include "maps.h"
+#include "objects.h"
 
 map *currentMap = NULL;
 
@@ -30,6 +31,21 @@ map *readMap(char *path){
     char tpath[32];
     sprintf(tpath, "assets/sprites/tm%d.png", m->tileMap);
     m->tileSet = LoadTexture(tpath);
+
+    for(int i = 0; i < m->objCount; i++){
+        uint16_t x, y, w, h;
+        fread(&x, 2, 1, fptr);
+        fread(&y, 2, 1, fptr);
+        fread(&w, 2, 1, fptr);
+        fread(&h, 2, 1, fptr);
+
+        obj collisionObject = {0};
+        collisionObject.size = (Vector2){w * 16, w * 16};
+        collisionObject.flags = X_SOLID;
+
+        spawnObject(x * 16, y * 16, collisionObject);
+
+    }
 
     return m;
 }

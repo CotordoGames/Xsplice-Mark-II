@@ -8,7 +8,6 @@
 
 typedef struct{
     uint8_t tile;
-    uint8_t coll;
 } map_tile;
 
 typedef struct{

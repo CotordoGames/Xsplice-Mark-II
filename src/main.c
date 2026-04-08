@@ -25,13 +25,11 @@ Texture2D ground;
 obj playerobj;
 obj npc;
 obj bg;
-obj groundobj;
 
 // object instances
 obj* bg_inst;
 obj* player_inst;
 obj* npc_inst;
-obj* ground_inst;
 
 int direction;
 
@@ -39,7 +37,7 @@ int speed = 2;
 
 void start(){
     initCamera(0, 0);
-    map *m = readMap("assets/maps/map01.xsm");
+    map *m = readMap("assets/maps/map02.xsm");
     if(!m) puts("map failed to load!");
     else printf("map: %dx%d tilemap:%d\n", m->width, m->height, m->tileMap);
     setMap(m);
@@ -51,12 +49,10 @@ void start(){
 
     playerobj = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 7 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID | X_GRAVITY };
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
-    groundobj = (obj){ ground, (Vector2){ 0, 192 }, (Vector2){ 0, 0 }, (Vector2){ 320, 48 }, (Vector2){ 0, 0 }, X_SOLID};
 
 
-    player_inst = spawnObject(0, 0, playerobj);
+    player_inst = spawnObject(160 - 12, 240 - 64, playerobj);
     npc_inst = spawnObject(298, 120, npc);
-    ground_inst = spawnObject(0, 192, groundobj);
 }
 
 void Update(){
