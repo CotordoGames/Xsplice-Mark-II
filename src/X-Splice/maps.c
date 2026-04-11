@@ -1,5 +1,6 @@
 #include "maps.h"
 #include "objects.h"
+#include "camera.h"
 
 map *currentMap = NULL;
 
@@ -31,6 +32,9 @@ map *readMap(char *path){
     char tpath[32];
     sprintf(tpath, "assets/sprites/tm%d.png", m->tileMap);
     m->tileSet = LoadTexture(tpath);
+    char bpath[32];
+    sprintf(bpath, "assets/sprites/bg%d.png", m->backGround);
+    m->bg_tex = LoadTexture(bpath);
 
     for(int i = 0; i < m->objCount; i++){
         uint16_t x, y, w, h;
@@ -40,7 +44,7 @@ map *readMap(char *path){
         fread(&h, 2, 1, fptr);
 
         obj collisionObject = {0};
-        collisionObject.size = (Vector2){w * 16, w * 16};
+        collisionObject.size = (Vector2){w * 16, h * 16};
         collisionObject.flags = X_SOLID;
 
         spawnObject(x * 16, y * 16, collisionObject);
@@ -65,6 +69,21 @@ void freeMap(map *map){
 void drawMap(){
     if(!currentMap) return;
 
+    //reason mods are here is to check if the screen's position is a multiple of 32 so it can reset the position to avoid badk shit fro happening
+    int offX = (int)(cam.target.x * 0.5f) % currentMap->bg_tex.width;
+    int offY = (int)(cam.target.y * 0.5f) % currentMap->bg_tex.height;
+
+    float startX = cam.target.x - 160 - offX;
+    float startY = cam.target.y - 120 - offY;
+
+    for(int i = -1; i <= 240/currentMap->bg_tex.height + 1; i++){
+        for(int x = -1; x <= 320/currentMap->bg_tex.width + 1; x++){
+            DrawTexture(currentMap->bg_tex,
+            startX + x * currentMap->bg_tex.width,
+            startY + i * currentMap->bg_tex.height,
+            WHITE);
+        }
+    }
     for(int y = 0; y < currentMap->height; y++){
         for(int x = 0; x < currentMap->width; x++){
             map_tile t = currentMap->tileData[y * currentMap->width + x];

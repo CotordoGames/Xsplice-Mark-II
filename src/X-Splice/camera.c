@@ -1,6 +1,8 @@
 #include "camera.h"
+#include "maps.h"
+#include <raymath.h>
 
-static Camera2D cam = {0};
+Camera2D cam = {0};
 
 void initCamera(float x, float y){
     cam.target = (Vector2){x, y};
@@ -10,8 +12,8 @@ void initCamera(float x, float y){
 }
 
 void updateCamera(Vector2 targetPosition){
-    cam.target.x = (int)targetPosition.x;
-    cam.target.y = (int)targetPosition.y;
+    cam.target.x = Clamp((int)targetPosition.x, 160,  currentMap->width * 16 - 160);
+    cam.target.y = Clamp((int)targetPosition.y, 120, currentMap->height * 16 - 120);
 }
 
 void beginCameraDraw(){

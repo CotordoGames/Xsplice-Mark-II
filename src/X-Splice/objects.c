@@ -89,7 +89,8 @@ void DrawObjects(){
             DrawTexture(loadedObjects[i].texture, loadedObjects[i].position.x, loadedObjects[i].position.y, WHITE);
         }
         if(debug){
-            DrawRectangleLines(loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, loadedObjects[i].size.x, loadedObjects[i].size.y, GREEN);
+            DrawRectangleLinesEx((Rectangle){loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, loadedObjects[i].size.x, loadedObjects[i].size.y}, 1, GREEN);
+            DrawRectangle(loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, loadedObjects[i].size.x, loadedObjects[i].size.y, (Color){0, 255, 0, 64});
         }
     }
 }

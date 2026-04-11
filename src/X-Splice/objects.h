@@ -3,7 +3,7 @@
 #include <raylib.h>
 #include <stdint.h>
 
-#define MAX_OBJECTS 256
+#define MAX_OBJECTS 4096
 #define X_SOLID (1 << 0)
 #define X_GRAVITY (1 << 1)
 #define X_VISIBLE (1 << 2)

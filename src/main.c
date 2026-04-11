@@ -37,7 +37,7 @@ int speed = 2;
 
 void start(){
     initCamera(0, 0);
-    map *m = readMap("assets/maps/map02.xsm");
+    map *m = readMap("assets/maps/map01.xsm");
     if(!m) puts("map failed to load!");
     else printf("map: %dx%d tilemap:%d\n", m->width, m->height, m->tileMap);
     setMap(m);
@@ -51,7 +51,7 @@ void start(){
     npc = (obj){ player, (Vector2){ 0, 0 }, (Vector2){ 0, 0 }, (Vector2){ 8, 8 }, (Vector2){ 8, 16 }, X_VISIBLE | X_SOLID };
 
 
-    player_inst = spawnObject(160 - 12, 240 - 64, playerobj);
+    player_inst = spawnObject(160 - 12, 120, playerobj);
     npc_inst = spawnObject(298, 120, npc);
 }
 

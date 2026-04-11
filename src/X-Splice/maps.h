@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <raylib.h>
 
-
 typedef struct{
     uint8_t tile;
 } map_tile;
@@ -21,7 +20,10 @@ typedef struct{
     uint8_t objCount;
     map_tile *tileData;
     Texture2D tileSet;
+    Texture2D bg_tex;
 } map;
+
+extern map *currentMap;
 
 map* readMap(char *path);
 
