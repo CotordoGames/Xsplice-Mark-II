@@ -12,7 +12,7 @@ There is any array of "loaded objects", where an "object" is made up of an X, Y,
 
  ## flags
 
- in the object struct, there is a `uint32_t flags`. in objects.h, flags such as `X_SOLID`, `X_VISIBLE`, ect. are defined as bit shifts, and then how the oject gets updated changes depending on the flags; this is what makes this engine the most modular.
+ in the object struct, there is a `uint32_t flags`. in objects.h, flags such as `X_SOLID`, `X_VISIBLE`, ect. are defined as bit shifts, and then how the object gets updated changes depending on the flags; this is what makes this engine the most modular.
 
  ## maps
 
