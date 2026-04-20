@@ -12,8 +12,16 @@ void initCamera(float x, float y){
 }
 
 void updateCamera(Vector2 targetPosition){
-    cam.target.x = Clamp((int)targetPosition.x, 160,  currentMap->width * 16 - 160);
-    cam.target.y = Clamp((int)targetPosition.y, 120, currentMap->height * 16 - 120);
+    float dt = GetFrameTime();
+
+    float tx = 1.0f - powf(1.0f - 0.25f, dt * 60.0f);
+    cam.target.x = Clamp(Lerp(cam.target.x, (int)targetPosition.x, tx), 160,  currentMap->width * 16 - 160);
+    //cam.target.x = Clamp((int)targetPosition.x, 160,  currentMap->width * 16 - 160);
+
+
+    float ty = 1.0f - powf(1.0f - 0.05f, dt * 60.0f);
+    cam.target.y = Clamp(Lerp(cam.target.y, (int)targetPosition.y, ty), 120, currentMap->height * 16 - 120);
+    //cam.target.y = Clamp((int)targetPosition.y, 120, currentMap->height * 16 - 120);
 }
 
 void beginCameraDraw(){

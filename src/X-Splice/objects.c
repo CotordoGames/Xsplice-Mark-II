@@ -1,6 +1,7 @@
 #include "objects.h"
 #include <stdio.h>
 #include <raylib.h>
+#include "camera.h"
 
 obj loadedObjects[MAX_OBJECTS];
 int ObjectCount = 0;
@@ -21,6 +22,8 @@ void deleteObject(int index){
 
 void DrawObjects(){
 
+    float dt = GetFrameTime();
+
     if(IsKeyPressed(KEY_F1)){
         debug = !debug;
     }
@@ -30,7 +33,7 @@ void DrawObjects(){
         bool BlockedY = false;
         // check for and update flags / flag based conditions
         if(loadedObjects[i].flags & X_GRAVITY){
-            loadedObjects[i].velocity.y += 0.25f;
+            loadedObjects[i].velocity.y += 0.36f * dt * 60;
             if(loadedObjects[i].velocity.y > 8){
                 loadedObjects[i].velocity.y = 8;
             }
@@ -42,8 +45,8 @@ void DrawObjects(){
 
                     if(i == x) continue;
 
-                    float nextX = loadedObjects[i].position.x + loadedObjects[i].velocity.x;
-                    float nextY = loadedObjects[i].position.y + loadedObjects[i].velocity.y;
+                    float nextX = loadedObjects[i].position.x + loadedObjects[i].velocity.x * dt * 60;
+                    float nextY = loadedObjects[i].position.y + loadedObjects[i].velocity.y * dt * 60;
 
                     Rectangle FutureX = { // define a rect that is one generation ahead of what the X should be to check if it will be touching something next frame
                         nextX + loadedObjects[i].colliderOffset.x,
@@ -75,12 +78,12 @@ void DrawObjects(){
         }
 
         if(!BlockedX){
-            loadedObjects[i].position.x += loadedObjects[i].velocity.x;
+            loadedObjects[i].position.x += loadedObjects[i].velocity.x * dt * 60;
         } else {
             loadedObjects[i].velocity.x = 0;
         }
         if(!BlockedY){
-            loadedObjects[i].position.y += loadedObjects[i].velocity.y;
+            loadedObjects[i].position.y += loadedObjects[i].velocity.y * dt * 60;
         } else {
             loadedObjects[i].velocity.y = 0;
         }
@@ -89,8 +92,9 @@ void DrawObjects(){
             DrawTexture(loadedObjects[i].texture, loadedObjects[i].position.x, loadedObjects[i].position.y, WHITE);
         }
         if(debug){
-            DrawRectangleLinesEx((Rectangle){loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, loadedObjects[i].size.x, loadedObjects[i].size.y}, 1, GREEN);
-            DrawRectangle(loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, loadedObjects[i].size.x, loadedObjects[i].size.y, (Color){0, 255, 0, 64});
+            DrawRectangleLinesEx((Rectangle){(int)loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, (int)loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, (int)loadedObjects[i].size.x, (int)loadedObjects[i].size.y}, 1, BLUE);
+            DrawRectangle((int)loadedObjects[i].position.x + loadedObjects[i].colliderOffset.x, (int)loadedObjects[i].position.y + loadedObjects[i].colliderOffset.y, (int)loadedObjects[i].size.x, (int)loadedObjects[i].size.y, (Color){64, 128, 192, 64});
+            DrawText(TextFormat("Obj count: %i", ObjectCount), (int)cam.target.x, (int)cam.target.y, 0, GREEN);
         }
     }
 }
